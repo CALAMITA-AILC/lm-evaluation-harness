@@ -1,0 +1,3 @@
+SELECT COUNT(*) FROM infetti JOIN guariti ON infetti.id_infezione = guariti.id_infezione WHERE infetti.stato = 'grave';	coronavirus
+SELECT MAX(data_nascita) from persone;	coronavirus
+SELECT AVG(TIMESTAMPDIFF(year,data_nascita,'2020-12-31')) as eta_media from persone;	coronavirus

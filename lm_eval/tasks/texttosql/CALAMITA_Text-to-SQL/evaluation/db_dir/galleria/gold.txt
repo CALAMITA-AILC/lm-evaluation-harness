@@ -1,0 +1,23 @@
+SELECT nome,anno_pubblicazione FROM Opera WHERE ID >= 5 and ID<=11;	galleria
+SELECT Opera.nome,Artista.cognome FROM Opera,Crea,Artista WHERE Opera.ID=Crea.opera and Crea.Artista=Artista.ID and (anno_pubblicazione >= 1900 and anno_pubblicazione<2000);	galleria
+SELECT anno_pubblicazione, COUNT(*) as numero_opere FROM Opera GROUP BY anno_pubblicazione;	galleria
+SELECT a.nome,a.cognome, GROUP_CONCAT(o.nome) AS opere FROM Artista a JOIN Crea c ON a.ID = c.artista JOIN Opera o ON c.opera = o.ID WHERE a.nazione IN ('Francia','Germania') GROUP BY a.ID;	galleria
+SELECT a.cognome FROM Artista a JOIN Crea c ON a.ID = c.artista JOIN Opera o ON c.opera = o.ID WHERE o.anno_pubblicazione BETWEEN 1880 AND 1910 GROUP BY a.ID HAVING COUNT(*) >= 2;	galleria
+SELECT O.anno_pubblicazione, COUNT(*) AS numero_opere FROM Opera O JOIN Crea C ON O.ID = C.opera JOIN Artista A ON C.artista = A.ID WHERE A.nome = 'Claude' AND A.cognome = 'Monet' OR A.nome = 'Paul' AND A.cognome = 'Cezanne' GROUP BY O.anno_pubblicazione;	galleria
+SELECT cognome, num_opere FROM (SELECT a.cognome, SUM(num_opere) AS num_opere FROM Artista a JOIN (SELECT artista, COUNT(*) AS num_opere FROM Crea GROUP BY artista) t ON a.ID = t.artista GROUP BY a.ID) x ORDER BY num_opere DESC LIMIT 5;	galleria
+SELECT AVG(num_opere) AS media FROM (SELECT COUNT(*) AS num_opere FROM Crea GROUP BY artista) t;	galleria
+SELECT nazione, AVG(num_opere) AS media FROM ( SELECT a.nazione, a.ID, COUNT(*) AS num_opere FROM Artista a JOIN Crea c ON a.ID = c.artista GROUP BY a.ID, a.nazione ) t GROUP BY nazione;	galleria
+SELECT movimento,COUNT(Opera.ID) as numero_opere from Opera,Artista,Crea where Opera.ID=Crea.opera and Artista.ID=Crea.Artista GROUP BY movimento;	galleria
+SELECT Opera.nome FROM Opera JOIN Crea ON Crea.opera = Opera.ID JOIN Artista ON Artista.ID = Crea.artista WHERE Artista.nome = 'Henri' AND Artista.cognome = 'Matisse' AND Crea.committente = 'Ščukin';	galleria
+SELECT Opera.id_museo as museo, COUNT(Opera.ID) as tot_opere FROM Opera JOIN Crea ON Opera.ID = Crea.opera JOIN Artista ON Artista.ID = Crea.artista WHERE Artista.cognome = 'Monet' GROUP BY Artista.ID, Opera.id_museo ORDER BY tot_opere DESC LIMIT 1	galleria
+SELECT cognome FROM Artista WHERE nazione = 'Francia';	galleria
+SELECT nazione, count(nazione) FROM Artista WHERE movimento = 'Impressionismo' GROUP BY nazione;	galleria
+SELECT count(Opera), committente FROM Crea GROUP BY committente;	galleria
+SELECT cognome FROM Artista WHERE nome_darte != NULL;	galleria
+SELECT anno_pubblicazione, count(anno_pubblicazione) FROM Opera GROUP BY anno_pubblicazione;	galleria
+SELECT nome FROM Opera WHERE dimensioni = '48x63';	galleria
+SELECT nome FROM Opera WHERE tecnica = 'olio su tela';	galleria
+SELECT COUNT(*) as number FROM Opera WHERE anno_pubblicazione = 1872;	galleria
+SELECT Opera.nome, Opera.anno_pubblicazione FROM Opera JOIN Crea ON Opera.ID = Crea.opera JOIN Artista ON Artista.ID = Crea.Artista WHERE Artista.cognome = 'Monet' ORDER BY anno_pubblicazione DESC;	galleria
+SELECT Artista.nome, Artista.cognome FROM Opera JOIN Crea ON Opera.ID = Crea.opera JOIN Artista ON Artista.ID = Crea.artista WHERE Opera.id_museo = 'Barnes Foundation' ORDER BY Artista.cognome;	galleria
+SELECT Opera.nome, Opera.id_museo FROM Opera JOIN Crea ON Opera.ID = Crea.opera JOIN Artista ON Artista.ID = Crea.artista WHERE Artista.cognome = 'Monet' AND Opera.tecnica IN ('acquarello', 'olio su tela') ORDER BY Opera.nome;	galleria

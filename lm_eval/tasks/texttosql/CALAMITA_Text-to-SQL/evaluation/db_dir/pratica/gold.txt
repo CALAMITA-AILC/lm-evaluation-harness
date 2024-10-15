@@ -1,0 +1,22 @@
+SELECT nome,cognome,nascita FROM assistente WHERE id_assistente = 11;	pratica
+SELECT a.cognome, p.data_consegna FROM amministrativo a INNER JOIN pratica p ON a.id_amministrativi = p.amministrativo;	pratica
+SELECT ass.nome, ass.cognome, COUNT(pr.codice_pratica) AS 'Numero pratiche' FROM assistente ass INNER JOIN pratica pr ON ass.id_assistente = pr.assistente GROUP BY ass.id_assistente;	pratica
+SELECT DISTINCT(ass.id_assistente),ass.cognome AS 'Assistente', ass.assunzione AS 'DataAssunzione' FROM amministrativo a INNER JOIN pratica p ON a.id_amministrativi = p.amministrativo INNER JOIN assistente ass ON p.assistente = ass.id_assistente WHERE a.id_amministrativi = 7;	pratica
+SELECT a.nome, a.cognome, COUNT(DISTINCT p.codice_pratica) AS 'Numero pratiche' FROM amministrativo a LEFT JOIN pratica p ON a.id_amministrativi = p.amministrativo GROUP BY a.id_amministrativi HAVING COUNT(DISTINCT p.codice_pratica) > 1;	pratica
+SELECT nome, cognome, assunzione FROM assistente WHERE id_assistente >= 1 and id_assistente <=5 ORDER BY assunzione;	pratica
+SELECT codice_pratica,DATEDIFF(data_approvazione,data_consegna) as giorniApprovazione,data_approvazione from pratica;	pratica
+SELECT id_amministrativi, nome, cognome, succursale FROM amministrativo WHERE id_amministrativi IN ( SELECT amministrativo FROM pratica GROUP BY amministrativo HAVING AVG(DATEDIFF(data_approvazione, data_consegna)) > ( SELECT AVG(DATEDIFF(data_approvazione, data_consegna)) FROM pratica ));	pratica
+SELECT COUNT(DISTINCT(id_amministrativi)) as 'NumeroAmministrativi' FROM amministrativo a WHERE id_amministrativi IN ( SELECT amministrativo FROM pratica );	pratica
+SELECT ass.nome, ass.cognome,ass.nascita FROM assistente ass WHERE id_assistente IN ( SELECT DISTINCT assistente FROM pratica );	pratica
+SELECT a.nome, a.cognome FROM amministrativo a WHERE a.id_amministrativi IN( SELECT amministrativo FROM pratica WHERE data_consegna = ( SELECT MAX(data_consegna) FROM pratica ) );	pratica
+SELECT a.nome, a.cognome, p.codice_pratica FROM pratica p JOIN amministrativo a ON p.amministrativo = a.id_amministrativi where DATEDIFF(p.data_approvazione,p.data_consegna) = (SELECT DATEDIFF(data_approvazione,data_consegna) as minGiorniApprovazione FROM pratica order by minGiorniApprovazione limit 1);	pratica
+SELECT nome, cognome, nascita, assunzione from assistente where DATEDIFF(assunzione, nascita) < 10957;	pratica
+SELECT * from amministrativo where TIMESTAMPDIFF(year,nascita,assunzione)<30 ;	pratica
+SELECT cognome from amministrativo ORDER BY nascita;	pratica
+SELECT count(codice_pratica) from pratica where TIMESTAMPDIFF(month,data_consegna,data_approvazione)<3;	pratica
+SELECT id_assistente from assistente ORDER BY DATEDIFF(assunzione,nascita);	pratica
+SELECT nome from assistente ORDER BY inizio_assistenza DESC;	pratica
+SELECT assistente, COUNT(*) AS num_pratiche FROM pratica GROUP BY assistente HAVING num_pratiche > 1 ORDER BY assistente ;	pratica
+SELECT p.codice_pratica,p.data_consegna,a.nome,a.cognome,a.nascita FROM pratica p JOIN assistente a ON p.assistente = a.id_assistente WHERE a.nascita > '1990-12-31' and TIMESTAMPDIFF(month,data_consegna,data_approvazione)<5 ORDER BY nascita DESC;	pratica
+SELECT p.codice_pratica, a.cognome, am.cognome FROM pratica p JOIN assistente a ON p.assistente = a.id_assistente   JOIN amministrativo am ON p.amministrativo = am.id_amministrativi WHERE p.assistente = 1 or p.assistente=5 ORDER BY a.assunzione;	pratica
+SELECT * from amministrativo where DATEDIFF(assunzione,nascita) < (SELECT avg(DATEDIFF(assunzione,nascita)) from amministrativo);	pratica
