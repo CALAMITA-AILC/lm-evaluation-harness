@@ -1,0 +1,19 @@
+SELECT nome_csp, indirizzo, sitoWeb FROM centrosportivo WHERE citta = 'Roma';	centri
+SELECT COUNT(*) FROM centrodonazione;	centri
+SELECT nome_cd, indirizzo, citta FROM centrodonazione WHERE citta != 'Roma';	centri
+SELECT idSportivo, data_inizio_convenzione_d FROM convenzione_cd WHERE YEAR(data_inizio_convenzione_d)=2020	centri
+SELECT nome_csp,indirizzo,citta,telefono,email,sitoWeb FROM centrosportivo WHERE id=5;	centri
+SELECT c.nome_cd, COUNT(*) AS num_convenzioni FROM centrodonazione c JOIN convenzione_cd cc ON c.id = cc.idDonazione GROUP BY c.id HAVING num_convenzioni > 1;	centri
+SELECT cs.nome_csp, COUNT(*) AS num_convenzioni FROM centrosportivo cs JOIN convenzione_cs cc ON cs.id = cc.idSportivo GROUP BY cs.id ORDER BY num_convenzioni DESC	centri
+SELECT centrosportivo.nome_csp,centrosportivo.telefono FROM centrosportivo WHERE id NOT IN (SELECT idSportivo FROM convenzione_cd) AND id NOT IN (SELECT idSportivo FROM convenzione_cs);	centri
+SELECT cs.nome_csp, cs.sitoWeb FROM centrosportivo cs JOIN convenzione_cd cd ON cs.id = cd.idSportivo JOIN convenzione_cs csn ON cs.id = csn.idSportivo GROUP BY cs.id HAVING COUNT(*) > 1;	centri
+SELECT MAX(data_inizio_convenzione_d) FROM convenzione_cd;	centri
+SELECT convenzione_cd.idDonazione, convenzione_cd.idSportivo, centrosportivo.nome_csp FROM `convenzione_cd`  JOIN centrodonazione ON convenzione_cd.idDonazione = centrodonazione.id  JOIN centrosportivo ON convenzione_cd.idSportivo = centrosportivo.id WHERE centrodonazione.nome_cd = 'AVIS';	centri
+SELECT `nome_csn` FROM `centrosanitario` WHERE `is_convenzionato` = 1 AND citta = 'Roma';	centri
+SELECT nome_csp FROM centrosportivo WHERE is_agonistico = true;	centri
+SELECT citta, count(*) FROM centrosportivo GROUP BY citta;	centri
+SELECT nome_csn FROM centrosanitario WHERE is_convenzionato = true;	centri
+SELECT email FROM centrodonazione WHERE nome_cd = 'AVIS';	centri
+SELECT COUNT(centrosportivo.id) FROM `centrosportivo` WHERE `is_agonistico`= true AND citta = 'Roma' AND ( (centrosportivo.id IN (SELECT convenzione_cd.idSportivo FROM convenzione_cd WHERE YEAR(convenzione_cd.data_inizio_convenzione_d) >= 2020 ) ) OR (centrosportivo.id IN (SELECT convenzione_cs.idSportivo FROM convenzione_cs WHERE YEAR(convenzione_cs.data_inizio_convenzione_s) >= 2020) ) )	centri
+SELECT centrosportivo.nome_csp, centrodonazione.nome_cd FROM convenzione_cd JOIN centrosportivo ON centrosportivo.id = convenzione_cd.idSportivo JOIN centrodonazione ON centrodonazione.id = convenzione_cd.idDonazione WHERE centrosportivo.citta = centrodonazione.citta AND centrosportivo.is_agonistico = true;	centri
+SELECT centrosportivo.nome_csp, centrodonazione.nome_cd FROM (SELECT `idSportivo`, MAX(data_inizio_convenzione_d) as data_recente FROM `convenzione_cd` GROUP BY idSportivo) as convenzioni_recenti JOIN convenzione_cd ON convenzioni_recenti.idSportivo = convenzione_cd.idSportivo JOIN centrosportivo ON centrosportivo.id = convenzioni_recenti.idSportivo JOIN centrodonazione ON centrodonazione.id = convenzione_cd.idDonazione WHERE convenzione_cd.data_inizio_convenzione_d = convenzioni_recenti.data_recente	centri

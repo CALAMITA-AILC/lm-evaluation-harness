@@ -1,0 +1,117 @@
+{
+  "results": {
+    "ita-text-to-sql": {
+      "alias": "ita-text-to-sql",
+      "execution_accuracy,none": 0.0,
+      "execution_accuracy_stderr,none": 0.0
+    }
+  },
+  "group_subtasks": {
+    "ita-text-to-sql": []
+  },
+  "configs": {
+    "ita-text-to-sql": {
+      "task": "ita-text-to-sql",
+      "dataset_path": "json",
+      "dataset_kwargs": {
+        "data_files": "queries.json"
+      },
+      "test_split": "train",
+      "process_docs": "def debug(dataset: datasets.Dataset) -> datasets.Dataset:\n    dataset = dataset.select([i for i in range(25)])      # selecting 4 rows for DEBUG\n    return dataset\n",
+      "doc_to_text": "def generate_prompt(doc):\n\tdb_name=doc['db_id']\n\tfile=base_path+'databases/'+db_name+'/no_insert_'+db_name+'.sql'\n\ttry:\n\t\twith open(file,'r') as dbfile:\n\t\t\tsql_schema=dbfile.read()\n\texcept:\n\t\tprint(\"Errore fatale: file non trovato. Controllare 'base_path' nel file utils.py. Esecuzione terminata.\")\n\t\texit()\t\n\tprompt=\"Considera il seguente database: \\n\"+sql_schema+\"\\n Traduci in SQL la seguente query in linguaggio naturale: \\n\"+doc['original']\n\treturn prompt\n",
+      "doc_to_target": "output",
+      "process_results": "def process_results(doc,generated):\n\tprint(f\"Len original: {len(doc)}\")\n\tprint(f\"Len generated: {len(generated)}\")\n\tprint(doc)\n\tprint(generated)\n\tresult=0\n\t\n\n\tdb=doc['db_id']\n\tdatabase=db\n\tquery_gold=doc['query']\n\tquery_gen=generated[0]\n\n\turl=\"mysql+mysqlconnector://calamita:password@127.0.0.1:3306/{}\".format(db)\n\tengine = create_engine(url)\n\tconnection = engine.connect()\n\tmetadata = MetaData()\n\tmetadata.reflect(bind=engine)\n\tescaped_sql_gold = sqlalchemy.text(query_gold)\n\tescaped_sql_gen = sqlalchemy.text(query_gen)\n\tprint(\"DEBUG\")\n\tprint(f\"Query originale: {escaped_sql_gold}\")\n\tprint(f\"Query generata: {escaped_sql_gen}\")\n\twith engine.connect() as conn:\n\t\tresult_gold = conn.execute(escaped_sql_gold)\n\t\t#gestire query sbagliate sintatticamente\n\t\ttry:\n\t\t\tresult_gen = conn.execute(escaped_sql_gen)\n\t\t\tresult = compare_results(result_gold,result_gen)\n\t\texcept :\n\t\t\tprint(\"-----ERROR-----\")\n\t\t\tprint(\"error on query:\",query_gen)\n\t\t\tprint(\"db:\",db)\n\t\t\tprint(\"---------------\")\n\t\t\tresult = 0\n\treturn {\"execution_accuracy\": result}\n",
+      "description": "",
+      "target_delimiter": " ",
+      "fewshot_delimiter": "\n\n",
+      "num_fewshot": 0,
+      "metric_list": [
+        {
+          "metric": "execution_accuracy",
+          "aggregation": "mean"
+        }
+      ],
+      "output_type": "generate_until",
+      "generation_kwargs": {
+        "until": [
+          "\n\n"
+        ],
+        "do_sample": false
+      },
+      "repeats": 1,
+      "should_decontaminate": false,
+      "metadata": {
+        "version": 1.0
+      }
+    }
+  },
+  "versions": {
+    "ita-text-to-sql": 1.0
+  },
+  "n-shot": {
+    "ita-text-to-sql": 0
+  },
+  "higher_is_better": {
+    "ita-text-to-sql": {
+      "execution_accuracy": null
+    }
+  },
+  "n-samples": {
+    "ita-text-to-sql": {
+      "original": 25,
+      "effective": 25
+    }
+  },
+  "config": {
+    "model": "hf",
+    "model_args": "pretrained=Qwen/Qwen2.5-3B-Instruct,dtype=auto",
+    "model_num_parameters": 3085938688,
+    "model_dtype": "torch.bfloat16",
+    "model_revision": "main",
+    "model_sha": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "batch_size": "16",
+    "batch_sizes": [],
+    "device": "cuda",
+    "use_cache": null,
+    "limit": null,
+    "bootstrap_iters": 100000,
+    "gen_kwargs": null,
+    "random_seed": 0,
+    "numpy_seed": 1234,
+    "torch_seed": 1234,
+    "fewshot_seed": 1234
+  },
+  "git_hash": "b2bf7bc4",
+  "date": 1729008257.1849892,
+  "pretty_env_info": "PyTorch version: 2.4.0\nIs debug build: False\nCUDA used to build PyTorch: 12.1\nROCM used to build PyTorch: N/A\n\nOS: Ubuntu 22.04.4 LTS (x86_64)\nGCC version: Could not collect\nClang version: Could not collect\nCMake version: version 3.26.4\nLibc version: glibc-2.35\n\nPython version: 3.11.9 (main, Apr 19 2024, 16:48:06) [GCC 11.2.0] (64-bit runtime)\nPython platform: Linux-5.4.0-187-generic-x86_64-with-glibc2.35\nIs CUDA available: True\nCUDA runtime version: Could not collect\nCUDA_MODULE_LOADING set to: LAZY\nGPU models and configuration: GPU 0: NVIDIA RTX A4000\nNvidia driver version: 535.183.01\ncuDNN version: Could not collect\nHIP runtime version: N/A\nMIOpen runtime version: N/A\nIs XNNPACK available: True\n\nCPU:\nArchitecture:                       x86_64\nCPU op-mode(s):                     32-bit, 64-bit\nAddress sizes:                      43 bits physical, 48 bits virtual\nByte Order:                         Little Endian\nCPU(s):                             32\nOn-line CPU(s) list:                0-31\nVendor ID:                          AuthenticAMD\nModel name:                         AMD Ryzen Threadripper PRO 3955WX 16-Cores\nCPU family:                         23\nModel:                              49\nThread(s) per core:                 2\nCore(s) per socket:                 16\nSocket(s):                          1\nStepping:                           0\nFrequency boost:                    enabled\nCPU max MHz:                        3900.0000\nCPU min MHz:                        2200.0000\nBogoMIPS:                           7800.09\nFlags:                              fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr wbnoinvd arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif umip rdpid overflow_recov succor smca sme sev sev_es\nVirtualization:                     AMD-V\nL1d cache:                          512 KiB (16 instances)\nL1i cache:                          512 KiB (16 instances)\nL2 cache:                           8 MiB (16 instances)\nL3 cache:                           64 MiB (4 instances)\nNUMA node(s):                       1\nNUMA node0 CPU(s):                  0-31\nVulnerability Gather data sampling: Not affected\nVulnerability Itlb multihit:        Not affected\nVulnerability L1tf:                 Not affected\nVulnerability Mds:                  Not affected\nVulnerability Meltdown:             Not affected\nVulnerability Mmio stale data:      Not affected\nVulnerability Retbleed:             Vulnerable\nVulnerability Spec store bypass:    Mitigation; Speculative Store Bypass disabled via prctl and seccomp\nVulnerability Spectre v1:           Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:           Mitigation; Retpolines; IBPB conditional; STIBP conditional; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                Not affected\nVulnerability Tsx async abort:      Not affected\n\nVersions of relevant libraries:\n[pip3] numpy==1.26.4\n[pip3] optree==0.12.1\n[pip3] torch==2.4.0\n[pip3] torchaudio==2.4.0\n[pip3] torchelastic==0.2.2\n[pip3] torchvision==0.19.0\n[pip3] triton==3.0.0\n[conda] blas                      1.0                         mkl  \n[conda] ffmpeg                    4.3                  hf484d3e_0    pytorch\n[conda] libjpeg-turbo             2.0.0                h9bf148f_0    pytorch\n[conda] mkl                       2023.1.0         h213fc3f_46344  \n[conda] mkl-service               2.4.0           py311h5eee18b_1  \n[conda] mkl_fft                   1.3.8           py311h5eee18b_0  \n[conda] mkl_random                1.2.4           py311hdb19cb5_0  \n[conda] numpy                     1.26.4          py311h08b1b3b_0  \n[conda] numpy-base                1.26.4          py311hf175353_0  \n[conda] optree                    0.12.1                   pypi_0    pypi\n[conda] pytorch                   2.4.0           py3.11_cuda12.1_cudnn9.1.0_0    pytorch\n[conda] pytorch-cuda              12.1                 ha16c6d3_5    pytorch\n[conda] pytorch-mutex             1.0                        cuda    pytorch\n[conda] torchaudio                2.4.0               py311_cu121    pytorch\n[conda] torchelastic              0.2.2                    pypi_0    pypi\n[conda] torchtriton               3.0.0                     py311    pytorch\n[conda] torchvision               0.19.0              py311_cu121    pytorch",
+  "transformers_version": "4.45.2",
+  "upper_git_hash": null,
+  "tokenizer_pad_token": [
+    "<|endoftext|>",
+    "151643"
+  ],
+  "tokenizer_eos_token": [
+    "<|im_end|>",
+    "151645"
+  ],
+  "tokenizer_bos_token": [
+    null,
+    "None"
+  ],
+  "eot_token_id": 151645,
+  "max_length": 32768,
+  "task_hashes": {
+    "ita-text-to-sql": "c47e338300b4cc5805f18304b397ed43b51e691140d00bc878b7efa06b948c17"
+  },
+  "model_source": "hf",
+  "model_name": "Qwen/Qwen2.5-3B-Instruct",
+  "model_name_sanitized": "Qwen__Qwen2.5-3B-Instruct",
+  "system_instruction": null,
+  "system_instruction_sha": null,
+  "fewshot_as_multiturn": false,
+  "chat_template": null,
+  "chat_template_sha": null,
+  "start_time": 9537384.643428773,
+  "end_time": 9537404.895047355,
+  "total_evaluation_time_seconds": "20.251618582755327"
+}
