@@ -1,7 +1,7 @@
 
 def process_docs_abs(ds):
     ##Debug prendo solo 25 valori
-    ds = ds.select([i for i in range(25)])      # selecting 4 rows for DEBUG
+    #ds = ds.select([i for i in range(25)])      # selecting 4 rows for DEBUG
     def _helper(doc):
         prompt = """Assegna un valore di astrazione da 1 a 5 alla parola {parola} nel contesto della frase seguente:
 {frase}
@@ -26,7 +26,7 @@ Descrizione dei valori:
 
 def process_docs_inc(ds):
         ##Debug prendo solo 25 valori
-    ds = ds.select([i for i in range(25)])      # selecting 4 rows for DEBUG
+    #ds = ds.select([i for i in range(25)])      # selecting 4 rows for DEBUG
     def _helper(doc):
         prompt = """Assegna un valore di inclusività da 1 a 5 alla parola {parola} nel contesto della frase seguente:
 {frase}

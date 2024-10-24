@@ -4,7 +4,7 @@ group:
 dataset_path: gpucce/abricot
 dataset_name: abs
 dataset_kwargs:
-  trust_remote_code: True # any extra keyword arguments that should be passed to the dataset constructor, e.g. `data_dir`.
+  trust_remote_code: True
 output_type: multiple_choice
 training_split: null
 validation_split: "validation"

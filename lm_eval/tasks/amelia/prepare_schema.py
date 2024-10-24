@@ -1,7 +1,7 @@
 from sklearn.preprocessing import MultiLabelBinarizer
 import datasets
 
-debug=True
+debug=False
 TARGET_COLUMN = "Scheme" # apply dropna, Scheme is a valid attribute only for legal premises
 
 MC_OPTIONS = ['Class', 'Itpr', 'Prec', 'Princ', 'Rule']

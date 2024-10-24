@@ -26,18 +26,18 @@ def helper_olimpiadi(doc):
 
 def process_docs_mate_olimpiadi_multipla(dataset):
     ds = dataset.filter(lambda x: x["tipo"] == "multipla")
-    #ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
+    ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
     return ds.map(helper_olimpiadi) # returns back a datasets.Dataset object
 
 def process_docs_mate_olimpiadi_multipla_b(dataset):
     ds = dataset.filter(lambda x: x["tipo"] == "multipla")
-    #ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
+    ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
     ds = ds.filter(lambda x: "b" in x["test_id"])
     return ds.map(helper_olimpiadi) # returns back a datasets.Dataset object
 
 def process_docs_mate_olimpiadi_multipla_t(dataset):
     ds = dataset.filter(lambda x: x["tipo"] == "multipla")
-    #ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
+    ds = ds.filter(lambda x: x["sorgente"] == "olimpiadi")
     ds = ds.filter(lambda x: "t" in x["test_id"])
     return ds.map(helper_olimpiadi) # returns back a datasets.Dataset object
 

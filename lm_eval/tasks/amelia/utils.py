@@ -17,7 +17,7 @@ def preprocess_scheme(dataset):
     dataset=dataset.filter(lambda x: x['Scheme'] is not None)
     if debug:
         print(f"Lunghezza filtrata: {len(dataset)}")
-    dataset=debug_preprocess(dataset)
+        dataset=debug_preprocess(dataset)
     if debug:
         print(f"Lunghezza per debug: {len(dataset)}")
     return dataset
@@ -29,7 +29,7 @@ def preprocess_premisetype(dataset):
     dataset=dataset.filter(lambda x: x['Type'] is not None)
     if debug:
         print(f"Lunghezza filtrata: {len(dataset)}")
-    dataset=debug_preprocess(dataset)
+        dataset=debug_preprocess(dataset)
     if debug:
         print(f"Lunghezza per debug: {len(dataset)}")
     return dataset
