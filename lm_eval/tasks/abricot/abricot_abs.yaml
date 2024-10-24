@@ -1,0 +1,19 @@
+task: abricot_abs
+group:
+ - abricot
+dataset_path: gpucce/abricot
+dataset_name: abs
+dataset_kwargs:
+  trust_remote_code: True
+output_type: multiple_choice
+training_split: null
+validation_split: "validation"
+test_split: null
+process_docs: !function utils.process_docs_abs
+doc_to_text: prompt
+doc_to_target: label
+doc_to_choice: choices
+metric_list:
+ - metric: acc
+   aggregation_type: mean
+   higher_is_better: true
