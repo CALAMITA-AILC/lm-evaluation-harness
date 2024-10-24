@@ -1,1 +1,0 @@
-Coronavirus database
